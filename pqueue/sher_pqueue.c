@@ -14,19 +14,19 @@ void *pq_enqueue(pqueue_t *q, void *data, int priority) {
 void *pq_dequeue(pqueue_t *q) {
     if (q == NULL) return NULL;
 
-    node_pq *pop = q->first, *pre = NULL;
+    node_pq *pop = q->first, *pre_pop = NULL;
     void *data = NULL;
 
-    for (node_pq *cur = pop->next; cur; cur = cur->next) {
-        if (cur && cur->priority > pop->priority) {
-            pre = pop;
+    for (node_pq *cur = pop->next, *pre = pop; cur; pre = cur, cur = cur->next) {
+        if (cur->priority > pop->priority) {
+            pre_pop = pre;
             pop = cur;
         }
     }
 
     if (pop) {
         data = pop->data;
-        *(pre ? &pre->next : &q->first) = pop->next;
+        *(pre_pop ? &pre_pop->next : &q->first) = pop->next;
 
         free(pop);
     }
